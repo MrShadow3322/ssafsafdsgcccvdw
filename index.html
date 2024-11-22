@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marketplace</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #1a1d2e;
+      color: #ffffff;
+    }
+    .header, .footer {
+      background-color: #23263a;
+      padding: 10px;
+      text-align: center;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+    }
+    .nav a {
+      color: #ffffff;
+      text-decoration: none;
+      padding: 5px 15px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    .nav a:hover {
+      background-color: #35405d;
+    }
+    .content {
+      padding: 20px;
+      text-align: center;
+    }
+    .swipe-container {
+      display: flex;
+      overflow-x: auto;
+      gap: 20px;
+      padding: 20px;
+    }
+    .swipe-item {
+      background-color: #35405d;
+      padding: 20px;
+      border-radius: 10px;
+      min-width: 200px;
+      transition: transform 0.2s;
+    }
+    .swipe-item:hover {
+      transform: scale(1.05);
+    }
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .form input, .form textarea {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+    }
+    .form button {
+      background-color: #5567a6;
+      color: #ffffff;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    .form button:hover {
+      background-color: #40568a;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>Marketplace</h1>
+  </header>
+  <nav class="nav">
+    <a href="#main" onclick="showPage('main')">Главная</a>
+    <a href="#search" onclick="showPage('search')">Поиск</a>
+    <a href="#profile" onclick="showPage('profile')">Профиль</a>
+  </nav>
+  <main class="content" id="content">
+    <!-- Main page -->
+    <section id="main" class="page">
+      <h2>Выбирайте товары</h2>
+      <div class="swipe-container" id="items">
+        <!-- JS will insert products here -->
+      </div>
+    </section>
+    <!-- Search page -->
+    <section id="search" class="page" style="display: none;">
+      <h2>Поиск</h2>
+      <input type="text" id="search-input" placeholder="Введите название">
+      <div id="search-results"></div>
+    </section>
+    <!-- Profile page -->
+    <section id="profile" class="page" style="display: none;">
+      <h2>Профиль</h2>
+      <p>Ваш ID: <span id="user-id"></span></p>
+      <h3>История заказов</h3>
+      <div id="order-history">
+        <p>Пока пусто</p>
+      </div>
+      <h3>Для продавцов</h3>
+      <form class="form" id="seller-form">
+        <input type="text" placeholder="Ваш номер" required>
+        <textarea placeholder="Описание" required></textarea>
+        <button type="submit">Отправить заявку</button>
+      </form>
+    </section>
+  </main>
+  <footer class="footer">
+    Marketplace © 2024
+  </footer>
+  <script>
+    // Sample data for products
+    const products = [
+      { id: 1, name: "Товар 1", description: "Описание товара 1" },
+      { id: 2, name: "Товар 2", description: "Описание товара 2" },
+      // Add more products here
+    ];
+
+    // Populate main page
+    const itemsContainer = document.getElementById("items");
+    products.forEach(product => {
+      const item = document.createElement("div");
+      item.className = "swipe-item";
+      item.innerHTML = `<h3>${product.name}</h3><p>${product.description}</p>`;
+      itemsContainer.appendChild(item);
+    });
+
+    // Search functionality
+    document.getElementById("search-input").addEventListener("input", (e) => {
+      const query = e.target.value.toLowerCase();
+      const results = products.filter(p => p.name.toLowerCase().includes(query));
+      const resultsContainer = document.getElementById("search-results");
+      resultsContainer.innerHTML = results.map(r => `<p>${r.name}</p>`).join("");
+    });
+
+    // Switch between pages
+    function showPage(pageId) {
+      document.querySelectorAll(".page").forEach(page => {
+        page.style.display = page.id === pageId ? "block" : "none";
+      });
+    }
+
+    // Unique user ID
+    const userId = `user_${Math.random().toString(36).substr(2, 9)}`;
+    document.getElementById("user-id").textContent = userId;
+
+    // Handle seller form submission
+    document.getElementById("seller-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const message = `
+        Новая заявка от продавца:
+        Номер: ${formData.get("number")}
+        Описание: ${formData.get("description")}
+      `;
+      alert("Заявка отправлена: " + message); // Replace with bot API call
+    });
+  </script>
+</body>
+</html>
